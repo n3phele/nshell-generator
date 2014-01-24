@@ -502,11 +502,11 @@ def generate_zips():
         # Zip output folder contents
         # cd <folder_name> ;
         # zip -r <zip_name> ./ ;
-        # cd .. ;
+        # mv <zip_name>.zip ../ ;
         zip_format =\
             "cd {0} ;\n\
-            zip -r {0} ./ ;\n\
-            cd .. ;\n"
+        zip -r {0} ./ ;\n\
+        mv {0}.zip ../ ;\n"
 
         zips = ""
         for output in output_dirs:
