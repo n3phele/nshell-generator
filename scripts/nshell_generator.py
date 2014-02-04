@@ -4,7 +4,7 @@ __author__ = "Icaro Raupp Henrique"
 __copyright__ = ""
 __credits__ = ["Icaro Raupp Henrique"]
 __license__ = ""
-__version__ = "2.0"
+__version__ = "2.1"
 __maintainer__ = "Icaro Raupp Henrique"
 __email__ = "icaro.henrique@cpca.pucrs.br"
 __status__ = ""
@@ -180,7 +180,10 @@ class ScriptInfo(object):
                 param['label'] = option.label
                 param['short_opt'] = option.short_opt
                 param['long_opt'] = option.long_opt
-                if option.default is not None:
+                # Default can come as undeclared value (NoneType) or
+                # default=None (str)
+                if option.default is not None and\
+                        option.default != "None":
                     param['default'] = option.default
                 else:
                     param['default'] = None
@@ -384,7 +387,7 @@ def fill_parameters(parameters_list):
         parameters += parameter['type'] + " " + parameter['name']
         parameters += " = "
 
-        if parameter['default'] != "None":
+        if parameter['default'] is not None:
             parameters += value_format(parameter['type'], parameter['default'])
         else:
             parameters += value_format(parameter['type'], "")
@@ -563,8 +566,10 @@ def command_onVM_required(info, params_cmd):
     required_output = info.output_files_list[0]
     for output_file in required_output:
         command += " "
-        command += output_file['short_opt'] + " " +\
-            output_file['name'] + "." + output_file['type']
+        command += output_file['short_opt'] + " " + output_file['name']
+        # In the required output files, output folder can't be .zip
+        if output_file['type'] != "zip":
+            command += "." + output_file['type']
 
     return command
 
@@ -668,6 +673,7 @@ def make_nshell(script_path, output_dir, params_cmd):
     script_name, extension = splitext(command)
     try:
         script_qiime = __import__(script_name)
+        print script_name
 
         info = ScriptInfo(script_qiime.script_info, script_name)
 
