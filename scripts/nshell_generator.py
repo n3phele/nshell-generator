@@ -4,7 +4,7 @@ __author__ = "Icaro Raupp Henrique"
 __copyright__ = ""
 __credits__ = ["Icaro Raupp Henrique"]
 __license__ = ""
-__version__ = "2.1"
+__version__ = "2.2"
 __maintainer__ = "Icaro Raupp Henrique"
 __email__ = "icaro.henrique@cpca.pucrs.br"
 __status__ = ""
@@ -390,7 +390,11 @@ def fill_parameters(parameters_list):
         if parameter['default'] is not None:
             parameters += value_format(parameter['type'], parameter['default'])
         else:
-            parameters += value_format(parameter['type'], "")
+            # If parameter has no default value,
+            # put "" for strings and 0 for numeric values
+            parameters += value_format(
+                parameter['type'],
+                "" if parameter['type'] == type_converter['string'] else 0)
         parameters += " # " + parameter['label']
 
     return parameters
@@ -474,6 +478,16 @@ def generate_nshell_commands(info, params_cmd):
     commands += command_onVM_optional_files(info) + "\n"
 
     commands += "\n\t\t" + PATH_FIX + "\n"
+
+    # Concatenate additional nshell expressions before script execution
+    # if the file is supplied
+    if params_cmd['concat'] is not None:
+        with open(params_cmd['concat'], 'r') as concat_file:
+            commands += "\n"
+            line_text = concat_file.readline()
+            while line_text != "":
+                commands += "\t\t" + line_text
+                line_text = concat_file.readline()
 
     commands += "\n\t\t" + required_command + " $" + OPTIONAL_VAR + " " +\
         command_onVM_optional_params(info) + " ;" + "\n"
@@ -671,9 +685,9 @@ def if_optional_file(short_opt, name, ext, is_optional):
 def make_nshell(script_path, output_dir, params_cmd):
     dir_path, command = split(script_path)
     script_name, extension = splitext(command)
+
     try:
         script_qiime = __import__(script_name)
-        print script_name
 
         info = ScriptInfo(script_qiime.script_info, script_name)
 

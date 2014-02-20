@@ -4,7 +4,7 @@ __author__ = "Icaro Raupp Henrique"
 __copyright__ = ""
 __credits__ = ["Icaro Raupp Henrique"]
 __license__ = ""
-__version__ = "2.0"
+__version__ = "2.2"
 __maintainer__ = "Icaro Raupp Henrique"
 __email__ = "icaro.henrique@cpca.pucrs.br"
 __status__ = ""
@@ -41,7 +41,10 @@ script_info['optional_options'] = [
     make_option('-n', '--nodes', type="string",
                 help='quantity of nodes to run the command'),
     make_option('-f', '--flavor', type="string",
-                help='machine flavor reference')
+                help='machine flavor reference'),
+    make_option('-c', '--concat', type="existing_filepath",
+                help='nshell expressions to concatenate and run\
+                before the script execution')
 ]
 script_info['version'] = __version__
 
@@ -56,5 +59,6 @@ if __name__ == '__main__':
     params_cmd['image'] = opts.image
     params_cmd['nodes'] = opts.nodes
     params_cmd['flavor'] = opts.flavor
+    params_cmd['concat'] = opts.concat
 
     make_nshell(script_path, output_dir, params_cmd)
