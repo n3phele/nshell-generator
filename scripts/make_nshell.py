@@ -29,11 +29,11 @@ script_info['required_options'] = [
     make_option('-s', '--script_path', type="existing_filepath",
                 help='the QIIME python script filepath to generate'),
     make_option('-o', '--output_dir', type="existing_dirpath",
-                help='output directory where to save the nshell file')
+                help='output directory where to save the nshell file'),
+    make_option('-z', '--zone', type="string",
+                help='zone to run the command')
 ]
 script_info['optional_options'] = [
-    make_option('-z', '--zone', type="string",
-                help='zone to run the command'),
     make_option('-m', '--name', type="string",
                 help='machine name'),
     make_option('-i', '--image', type="string",

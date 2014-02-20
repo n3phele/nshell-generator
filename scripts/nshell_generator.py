@@ -394,7 +394,8 @@ def fill_parameters(parameters_list):
             # put "" for strings and 0 for numeric values
             parameters += value_format(
                 parameter['type'],
-                "" if parameter['type'] == type_converter['string'] else 0)
+                "" if parameter['type'] == type_converter['string']
+                else "default")
         parameters += " # " + parameter['label']
 
     return parameters
@@ -536,7 +537,12 @@ def generate_zips():
 
 def command_createVM(info, params_cmd):
     command = "CREATEVM "
-    command += "--name " + params_cmd['name'] + " "
+
+    command += "--name "
+    if params_cmd['name'] is None:
+        command += VM_NAME + " "
+    else:
+        command += params_cmd['name'] + " "
 
     command += "--imageRef "
     if params_cmd['image'] is None:
@@ -649,7 +655,7 @@ def if_optional_parameter(short_opt, long_opt, name, type_, default):
         if type_ == "int" or type_ == "float":
             # Numeric values can't be compared to empty string, use default
             # If no default is set, use -1 as placeholder
-            value = default if default is not None else -1
+            value = default if default is not None else "\"default\""
             if_expr = if_format_others.format(name, value, param)
         elif type_ == "string":
             if_expr = if_format_others.format(name, value, param)
