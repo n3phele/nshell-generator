@@ -4,7 +4,7 @@ __author__ = "Icaro Raupp Henrique"
 __copyright__ = ""
 __credits__ = ["Icaro Raupp Henrique"]
 __license__ = ""
-__version__ = "2.2"
+__version__ = "2.2.1"
 __maintainer__ = "Icaro Raupp Henrique"
 __email__ = "icaro.henrique@cpca.pucrs.br"
 __status__ = ""
@@ -25,6 +25,10 @@ FLAVOR = "101"
 VM_NAME = "vmGen"
 OPTIONAL_VAR = "OPTIONAL_FILES"
 PATH_FIX = "source /home/ubuntu/sandbox/qiime_software/activate.sh ;"
+
+# Default values when parameters have no default values set
+STR_DEFAULT = "\"\""
+NUM_DEFAULT = 0
 
 type_converter = {}
 # Parameters types
@@ -394,8 +398,8 @@ def fill_parameters(parameters_list):
             # put "" for strings and 0 for numeric values
             parameters += value_format(
                 parameter['type'],
-                "" if parameter['type'] == type_converter['string']
-                else "default")
+                STR_DEFAULT if parameter['type'] == type_converter['string']
+                else NUM_DEFAULT)
         parameters += " # " + parameter['label']
 
     return parameters
@@ -403,10 +407,7 @@ def fill_parameters(parameters_list):
 
 # String values need quotes, bool and numeric values doesn't
 def value_format(type_, value):
-        if type_ == type_converter['string']:
-            return "\"{0}\"".format(value)
-        else:
-            return "{0}".format(value)
+    return "{0}".format(value)
 
 
 def fill_input_files(input_files_list):
@@ -651,11 +652,11 @@ def if_optional_parameter(short_opt, long_opt, name, type_, default):
         if_expr = if_format_bool.format(name, param)
     else:
         # Put parameters in command if they are not empty
-        value = "\"\""
+        value = STR_DEFAULT
         if type_ == "int" or type_ == "float":
             # Numeric values can't be compared to empty string, use default
             # If no default is set, use -1 as placeholder
-            value = default if default is not None else "\"default\""
+            value = default if default is not None else NUM_DEFAULT
             if_expr = if_format_others.format(name, value, param)
         elif type_ == "string":
             if_expr = if_format_others.format(name, value, param)
