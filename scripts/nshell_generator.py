@@ -27,7 +27,7 @@ OPTIONAL_VAR = "OPTIONAL_FILES"
 PATH_FIX = "source /home/ubuntu/sandbox/qiime_software/activate.sh ;"
 
 # Default values when parameters have no default values set
-STR_DEFAULT = "\"\""
+STR_DEFAULT = ""
 NUM_DEFAULT = 0
 
 type_converter = {}
@@ -655,7 +655,7 @@ def if_optional_parameter(short_opt, long_opt, name, type_, default):
         if_expr = if_format_bool.format(name, param)
     else:
         # Put parameters in command if they are not empty
-        value = STR_DEFAULT
+        value = "\"" + STR_DEFAULT + "\""
         if type_ == "int" or type_ == "float":
             # Numeric values can't be compared to empty string, use default
             # If no default is set, use -1 as placeholder
