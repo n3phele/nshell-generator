@@ -407,7 +407,10 @@ def fill_parameters(parameters_list):
 
 # String values need quotes, bool and numeric values doesn't
 def value_format(type_, value):
-    return "{0}".format(value)
+    if type_ == type_converter['string']:
+        return "\"{0}\"".format(value)
+    else:
+        return "{0}".format(value)
 
 
 def fill_input_files(input_files_list):
