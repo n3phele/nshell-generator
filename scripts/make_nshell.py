@@ -37,14 +37,16 @@ script_info['optional_options'] = [
     make_option('-m', '--name', type="string",
                 help='machine name'),
     make_option('-i', '--image', type="string",
-                help='machine image reference'),
+                help='machine image (imageId for Amazon) reference'),
     make_option('-n', '--nodes', type="string",
                 help='quantity of nodes to run the command'),
     make_option('-f', '--flavor', type="string",
-                help='machine flavor reference'),
+                help='machine flavor (instanceType for Amazon) reference'),
     make_option('-c', '--concat', type="existing_filepath",
                 help='nshell expressions to concatenate and run\
-                before the script execution')
+                before the script execution'),
+    make_option('-a', '--amazon', default=False,
+                help='adapt CREATEVM parameters for Amazon')
 ]
 script_info['version'] = __version__
 
@@ -60,5 +62,6 @@ if __name__ == '__main__':
     params_cmd['nodes'] = opts.nodes
     params_cmd['flavor'] = opts.flavor
     params_cmd['concat'] = opts.concat
+    params_cmd['amazon'] = opts.amazon
 
     make_nshell(script_path, output_dir, params_cmd)

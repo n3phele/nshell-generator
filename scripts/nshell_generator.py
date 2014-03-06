@@ -17,9 +17,11 @@ from os.path import splitext, split, join, basename
 ICON_URL = "http://www.n3phele.com/qiimeIcon"
 
 # Default values if parameters are not provided
-QIIME_IMAGE = "360427"
+IMAGE_HP = "360427"
+IMAGE_AMAZON = "ami-578d8e3e"
+FLAVOR_HP = "101"
+FLAVOR_AMAZON = "t1.micro"
 NODE_COUNT = "1"
-FLAVOR = "101"
 
 # Constants
 VM_NAME = "vmGen"
@@ -468,7 +470,7 @@ def generate_nshell_commands(info, params_cmd):
     commands = ""
     commands += params_cmd['zone'] + ":" + "\n"
 
-    # $$vmGen = CREATEVM ...
+    # $$vmGen = CREATEVM <params>
     commands += "\t" + "$$" + VM_NAME + " = "\
         + command_createVM(info, params_cmd) + "\n"
     # ON vmGen [--produces ...]
@@ -527,8 +529,8 @@ def generate_zips():
         # mv <zip_name>.zip ../ ;
         zip_format =\
             "cd {0} ;\n\
-        zip -r {0} ./ ;\n\
-        mv {0}.zip ../ ;\n"
+            zip -r {0} ./ ;\n\
+            mv {0}.zip ../ ;\n"
 
         zips = ""
         for output in output_dirs:
@@ -542,27 +544,29 @@ def generate_zips():
 def command_createVM(info, params_cmd):
     command = "CREATEVM "
 
+    is_hpcloud = not params_cmd['amazon']
+
     command += "--name "
     if params_cmd['name'] is None:
         command += VM_NAME + " "
     else:
         command += params_cmd['name'] + " "
 
-    command += "--imageRef "
+    command += "--imageRef " if is_hpcloud else "--imageId "
     if params_cmd['image'] is None:
-        command += QIIME_IMAGE + " "
+        command += IMAGE_HP if is_hpcloud else IMAGE_AMAZON + " "
     else:
         command += params_cmd['image'] + " "
 
-    command += "--nodeCount "
+    command += "--nodeCount " if is_hpcloud else "--minCount "
     if params_cmd['nodes'] is None:
         command += NODE_COUNT + " "
     else:
         command += params_cmd['nodes'] + " "
 
-    command += "--flavorRef "
+    command += "--flavorRef " if is_hpcloud else "--instanceType "
     if params_cmd['flavor'] is None:
-        command += FLAVOR + " "
+        command += FLAVOR_HP if is_hpcloud else FLAVOR_AMAZON + " "
     else:
         command += params_cmd['flavor'] + " "
 
