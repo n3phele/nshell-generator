@@ -45,7 +45,7 @@ script_info['optional_options'] = [
     make_option('-c', '--concat', type="existing_filepath",
                 help='nshell expressions to concatenate and run\
                 before the script execution'),
-    make_option('-a', '--amazon', default=False,
+    make_option('--amazon', default=False,
                 help='adapt CREATEVM parameters for Amazon')
 ]
 script_info['version'] = __version__

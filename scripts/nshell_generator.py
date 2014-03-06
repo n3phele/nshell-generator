@@ -552,22 +552,16 @@ def command_createVM(info, params_cmd):
     else:
         command += params_cmd['name'] + " "
 
-    command += "--imageRef " if is_hpcloud else "--imageId "
-    if params_cmd['image'] is None:
-        command += IMAGE_HP if is_hpcloud else IMAGE_AMAZON + " "
-    else:
+    if params_cmd['image'] is not None:
+        command += "--imageRef " if is_hpcloud else "--imageId "
         command += params_cmd['image'] + " "
 
-    command += "--nodeCount " if is_hpcloud else "--minCount "
-    if params_cmd['nodes'] is None:
-        command += NODE_COUNT + " "
-    else:
+    if params_cmd['nodes'] is not None:
+        command += "--nodeCount " if is_hpcloud else "--minCount "
         command += params_cmd['nodes'] + " "
 
-    command += "--flavorRef " if is_hpcloud else "--instanceType "
-    if params_cmd['flavor'] is None:
-        command += FLAVOR_HP if is_hpcloud else FLAVOR_AMAZON + " "
-    else:
+    if params_cmd['flavor'] is not None:
+        command += "--flavorRef " if is_hpcloud else "--instanceType "
         command += params_cmd['flavor'] + " "
 
     return command
